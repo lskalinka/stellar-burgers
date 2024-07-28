@@ -1,20 +1,23 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 import { getUserOrdersThunk } from '../../features/user/userOrdersSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
 
 export const ProfileOrders: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const ordersState = useSelector((store: RootState) => store.userOrders);
+  const dispatch = useAppDispatch();
+  const ordersState = useAppSelector((store: RootState) => store.userOrders);
   let orders: TOrder[] = [];
   if (ordersState.orderData) {
     orders = ordersState.orderData.orders;
   }
 
   useEffect(() => {
-    if (ordersState.isFirstLoading && !ordersState.isLoading) {
+    if (
+      (ordersState.isFirstLoading && !ordersState.isLoading) ||
+      !ordersState.orderData
+    ) {
       dispatch(getUserOrdersThunk());
     }
   }, [ordersState]);

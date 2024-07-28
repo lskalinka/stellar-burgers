@@ -2,13 +2,13 @@ import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
 import { TOrder, TOrdersData } from '@utils-types';
 import { FC, useCallback, useEffect } from 'react';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 import { getFeedsThunk } from '../../features/orders/ordersSlice';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
 
 export const Feed: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const ordersState = useSelector((store: RootState) => store.orders);
+  const dispatch = useAppDispatch();
+  const ordersState = useAppSelector((store: RootState) => store.orders);
   let ordersData: TOrdersData = {
     orders: [],
     total: 0,

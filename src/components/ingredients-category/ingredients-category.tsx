@@ -2,14 +2,14 @@ import { forwardRef, useMemo } from 'react';
 import { TIngredientsCategoryProps } from './type';
 import { TIngredient } from '@utils-types';
 import { IngredientsCategoryUI } from '../ui/ingredients-category';
-import { useSelector } from 'react-redux';
 import { RootState } from '../../services/store';
+import { useAppSelector } from '../../services/hook';
 
 export const IngredientsCategory = forwardRef<
   HTMLUListElement,
   TIngredientsCategoryProps
 >(({ title, titleRef, ingredients }, ref) => {
-  const burgerConstructorState = useSelector(
+  const burgerConstructorState = useAppSelector(
     (store: RootState) => store.burgerConstructor
   );
   let bun = null;

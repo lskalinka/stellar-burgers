@@ -1,11 +1,11 @@
 import { ProfileUI } from '@ui-pages';
-import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserThunk, updateUserThunk } from '../../features/user/userSlice';
-import { AppDispatch, RootState } from 'src/services/store';
+import { FC, SyntheticEvent, useState } from 'react';
+import { updateUserThunk } from '../../features/user/userSlice';
+import { RootState } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
 
 export const Profile: FC = () => {
-  const userState = useSelector((store: RootState) => store.user);
+  const userState = useAppSelector((store: RootState) => store.user);
   let user = {
     name: '',
     email: ''
@@ -28,7 +28,7 @@ export const Profile: FC = () => {
     formValue.email !== user?.email ||
     !!formValue.password;
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     dispatch(

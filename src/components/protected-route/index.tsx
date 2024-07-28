@@ -1,15 +1,7 @@
-import { useSelector } from 'react-redux';
-import {
-  Outlet,
-  Navigate,
-  useLocation,
-  RouteProps,
-  Route
-} from 'react-router-dom';
+import { Navigate, useLocation, RouteProps } from 'react-router-dom';
 import { RootState } from '../../services/store';
 import { Preloader } from '@ui';
-//тут
-//Пока скопировано из теории, скорее всего надо будет немного переписать
+import { useAppSelector } from '../../services/hook';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -21,7 +13,7 @@ export const ProtectedRoute = ({
   children,
   ...routeProps
 }: ProtectedRouteProps) => {
-  const userState = useSelector((store: RootState) => store.user);
+  const userState = useAppSelector((store: RootState) => store.user);
   const location = useLocation();
   if (userState.isLoading) {
     // пока идёт чекаут пользователя, показываем прелоадер

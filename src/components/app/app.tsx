@@ -9,30 +9,28 @@ import {
   Register,
   ResetPassword
 } from '../../pages';
-import {
-  Routes,
-  Route,
-  BrowserRouter,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import '../../index.css';
 import styles from './app.module.css';
-import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import { IngredientDetails, Modal } from '@components';
 import { ProtectedRoute } from '../protected-route';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 import { useCallback, useEffect } from 'react';
 import { getUserThunk } from '../../features/user/userSlice';
 import { getIngredientsThunk } from '../../features/ingredients/ingredientsSlice';
 import { Layout } from '../layout/layout';
 import { OrderModal } from '../order-modal';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
+import { DetailsPage } from '../../pages/details';
+import { OrderDetailsPage } from '../..//pages/details/order-details';
 
 export const App = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const userState = useSelector((store: RootState) => store.user);
-  const ingredientState = useSelector((store: RootState) => store.ingredients);
+  const userState = useAppSelector((store: RootState) => store.user);
+  const ingredientState = useAppSelector(
+    (store: RootState) => store.ingredients
+  );
   const onModalClose = (url: string) => {
     navigate(url, {
       replace: true
@@ -52,9 +50,12 @@ export const App = () => {
     userLoad();
   }, [userLoad]);
 
+  const location = useLocation();
+  const background = location.state?.background;
+
   return (
     <div className={styles.app}>
-      <Routes>
+      <Routes location={background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route
           path='/feed'
@@ -66,14 +67,20 @@ export const App = () => {
         />
         <Route
           path='/feed/:number'
-          element={<OrderModal onClose={() => onModalClose('/feed')} />}
+          element={
+            <Layout>
+              <OrderDetailsPage />
+            </Layout>
+          }
         />
         <Route
           path='/ingredients/:id'
           element={
-            <Modal title='Детали ингредиента' onClose={() => onModalClose('/')}>
-              <IngredientDetails />
-            </Modal>
+            <Layout>
+              <DetailsPage title='Детали ингредиента'>
+                <IngredientDetails />
+              </DetailsPage>
+            </Layout>
           }
         />
         <Route
@@ -136,14 +143,18 @@ export const App = () => {
             </ProtectedRoute>
           }
         />
+
         <Route
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <OrderModal onClose={() => onModalClose('/profile/orders')} />
+              <Layout>
+                <OrderDetailsPage />
+              </Layout>
             </ProtectedRoute>
           }
         />
+
         <Route
           path='*'
           element={
@@ -153,6 +164,39 @@ export const App = () => {
           }
         />
       </Routes>
+      {background && (
+        <Routes>
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal
+                title='Детали ингредиента'
+                onClose={() => onModalClose('/')}
+              >
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <OrderModal onClose={() => onModalClose('/profile/orders')} />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <Layout>
+                <OrderModal onClose={() => onModalClose('/feed')} />
+              </Layout>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };

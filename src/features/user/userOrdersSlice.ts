@@ -76,9 +76,7 @@ export const userOrdersSlice = createSlice({
         state.isLoading = false;
         state.orderRequest = false;
         state.lastOrder = action.payload;
-        if (state.orderData) {
-          state.orderData.orders.push(action.payload);
-        }
+        state.orderData = null;
         state.error = false;
       }
     );

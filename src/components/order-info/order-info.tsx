@@ -4,18 +4,20 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient, TOrder } from '@utils-types';
 import { getOrderByNumber } from '../../features/orders/ordersSlice';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
+import { RootState } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
 
 type OrderNumber = {
   number: string;
 };
 
 export const OrderInfo: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { number } = useParams<OrderNumber>();
-  const ingredientsState = useSelector((store: RootState) => store.ingredients);
-  const ordersState = useSelector((store: RootState) => store.orders);
+  const ingredientsState = useAppSelector(
+    (store: RootState) => store.ingredients
+  );
+  const ordersState = useAppSelector((store: RootState) => store.orders);
   let orderData: TOrder | null = null;
   if (ordersState.order && ordersState.order.number === Number(number)) {
     orderData = ordersState.order;
