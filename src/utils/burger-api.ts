@@ -1,4 +1,4 @@
-import { setCookie, getCookie } from './cookie';
+import { setCookie, getCookie, deleteCookie } from './cookie';
 import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 
 const URL = process.env.BURGER_API_URL;
@@ -83,7 +83,14 @@ export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
     .then((res) => checkResponse<TFeedsResponse>(res))
     .then((data) => {
-      if (data?.success) return data;
+      if (data?.success) {
+        const ordersData: TOrdersData = {
+          orders: data.orders,
+          total: data.total,
+          totalToday: data.totalToday
+        };
+        return ordersData;
+      }
       return Promise.reject(data);
     });
 
@@ -95,7 +102,14 @@ export const getOrdersApi = () =>
       authorization: getCookie('accessToken')
     } as HeadersInit
   }).then((data) => {
-    if (data?.success) return data.orders;
+    if (data?.success) {
+      const ordersData: TOrdersData = {
+        orders: data.orders,
+        total: data.total,
+        totalToday: data.totalToday
+      };
+      return ordersData;
+    }
     return Promise.reject(data);
   });
 
@@ -115,7 +129,7 @@ export const orderBurgerApi = (data: string[]) =>
       ingredients: data
     })
   }).then((data) => {
-    if (data?.success) return data;
+    if (data?.success) return data.order;
     return Promise.reject(data);
   });
 
@@ -142,7 +156,6 @@ type TAuthResponse = TServerResponse<{
   accessToken: string;
   user: TUser;
 }>;
-
 export const registerUserApi = (data: TRegisterData) =>
   fetch(`${URL}/auth/register`, {
     method: 'POST',
@@ -153,8 +166,12 @@ export const registerUserApi = (data: TRegisterData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
-      if (data?.success) return data;
-      return Promise.reject(data);
+      if (!data.success) {
+        return Promise.reject(data);
+      }
+      localStorage.setItem('refreshToken', data.refreshToken);
+      setCookie('accessToken', data.accessToken);
+      return data.user;
     });
 
 export type TLoginData = {
@@ -172,8 +189,12 @@ export const loginUserApi = (data: TLoginData) =>
   })
     .then((res) => checkResponse<TAuthResponse>(res))
     .then((data) => {
-      if (data?.success) return data;
-      return Promise.reject(data);
+      if (!data.success) {
+        return Promise.reject(data);
+      }
+      localStorage.setItem('refreshToken', data.refreshToken);
+      setCookie('accessToken', data.accessToken);
+      return data.user;
     });
 
 export const forgotPasswordApi = (data: { email: string }) =>
@@ -232,4 +253,13 @@ export const logoutApi = () =>
     body: JSON.stringify({
       token: localStorage.getItem('refreshToken')
     })
-  }).then((res) => checkResponse<TServerResponse<{}>>(res));
+  })
+    .then((res) => checkResponse<TServerResponse<{}>>(res))
+    .then((data) => {
+      if (!data.success) {
+        return Promise.reject(data);
+      }
+      localStorage.setItem('refreshToken', '');
+      deleteCookie('accessToken');
+      return data;
+    });

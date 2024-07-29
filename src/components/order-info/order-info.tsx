@@ -1,21 +1,42 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
-import { TIngredient } from '@utils-types';
+import { TIngredient, TOrder } from '@utils-types';
+import { getOrderByNumber } from '../../features/orders/ordersSlice';
+import { useParams } from 'react-router-dom';
+import { RootState } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/hook';
+
+type OrderNumber = {
+  number: string;
+};
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+  const dispatch = useAppDispatch();
+  const { number } = useParams<OrderNumber>();
+  const ingredientsState = useAppSelector(
+    (store: RootState) => store.ingredients
+  );
+  const ordersState = useAppSelector((store: RootState) => store.orders);
+  let orderData: TOrder | null = null;
+  if (ordersState.order && ordersState.order.number === Number(number)) {
+    orderData = ordersState.order;
+  }
 
-  const ingredients: TIngredient[] = [];
+  const ordersLoad = useCallback(() => {
+    if (
+      (!ordersState.order || ordersState.order.number !== Number(number)) &&
+      !ordersState.isOrderLoading
+    ) {
+      dispatch(getOrderByNumber(Number(number)));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    ordersLoad();
+  }, [ordersLoad]);
+
+  const ingredients: TIngredient[] = ingredientsState.ingredients;
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -59,7 +80,7 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  if (!orderInfo || ordersState.isOrderLoading) {
     return <Preloader />;
   }
 
