@@ -6,13 +6,14 @@ import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
+import { Layout } from '../../components/layout/layout';
 
 export const ConstructorPage: FC = () => {
   /** TODO: взять переменную из стора */
   const isIngredientsLoading = false;
 
   return (
-    <>
+    <Layout>
       {isIngredientsLoading ? (
         <Preloader />
       ) : (
@@ -28,6 +29,6 @@ export const ConstructorPage: FC = () => {
           </div>
         </main>
       )}
-    </>
+    </Layout>
   );
 };
