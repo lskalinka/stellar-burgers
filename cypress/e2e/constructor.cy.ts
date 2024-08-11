@@ -1,3 +1,5 @@
+import { defineConfig } from "cypress";
+
 describe('проверяем доступность приложения', function() {
     beforeEach(() => {
         const URL = 'https://norma.nomoreparties.space/api';
@@ -46,7 +48,7 @@ describe('проверяем доступность приложения', funct
  
  
  
-        cy.visit("http://localhost:4000/login");
+        cy.visit("/login");
         cy.get("[name^=email]").type("test@gmail.com");
         cy.get("[name^=password]").type("123456");
         cy.get("button").contains("Войти").click();
@@ -70,7 +72,7 @@ describe('проверяем доступность приложения', funct
  
  
     it('Сервис должен быть доступен по адресу localhost:4000', function () {
-        cy.visit('http://localhost:4000');
+        cy.visit('/');
         cy.fixture('authResponse.json').then((authResponse) => {
             cy.window().then((window) => {
                 const value = window.localStorage.getItem('refreshToken');
@@ -95,7 +97,7 @@ describe('проверяем доступность приложения', funct
             cy.url().should('include', `/ingredients/${id}`);
         });
         cy.get("#modals button").click();
-        cy.url().should('eq', 'http://localhost:4000/');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/`);
     });
  
     it("Открытие попапа ингредиента с закрытием на оверлей", () => {
@@ -110,7 +112,7 @@ describe('проверяем доступность приложения', funct
             cy.url().should('include', `/ingredients/${id}`);
         });
         cy.get(`[data-cy="modal_overlay"]`).click({force:true});
-        cy.url().should('eq', 'http://localhost:4000/');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/`);
      });
           
 
@@ -153,9 +155,9 @@ describe('проверяем доступность приложения', funct
  
  
         cy.get("#modals button").click();
-        cy.url().should('eq', 'http://localhost:4000/');
+        cy.url().should('eq', `${Cypress.config('baseUrl')}/`);
         cy.get("@constructor").contains('Выберите булки');
-cy.get("@constructor").contains('Выберите начинку');
+        cy.get("@constructor").contains('Выберите начинку');
     });
  });
  
