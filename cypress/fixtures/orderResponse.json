@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "name": "Заказ1",
+  "order":
+    {
+      "_id": "666",
+      "status": "готовится",
+      "name": "Заказ1",
+      "createdAt": "01.01.2024",
+      "updatedAt": "01.01.2024",
+      "number": 123,
+      "ingredients": [
+        "643d69a5c3f7b9001cfa093c",
+        "643d69a5c3f7b9001cfa0941",
+        "643d69a5c3f7b9001cfa0942"
+      ]
+    }
+ }
+ 

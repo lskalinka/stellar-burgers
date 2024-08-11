@@ -8,14 +8,14 @@ import {
 } from 'react-redux';
 import userSlice from '../features/user/userSlice';
 import { loadState, saveState } from '../utils/local-storage';
-import ingridientsSlice from '../features/ingredients/ingredientsSlice';
+import ingredientsSlice from '../features/ingredients/ingredientsSlice';
 import burgerConstructorSlice from '../features/burger-constructor/burgerConstructorSlice';
 import userOrdersSlice from '../features/user/userOrdersSlice';
 import ordersSlice from '../features/orders/ordersSlice';
 
 const rootReducer = combineReducers({
   user: userSlice,
-  ingredients: ingridientsSlice,
+  ingredients: ingredientsSlice,
   burgerConstructor: burgerConstructorSlice,
   userOrders: userOrdersSlice,
   orders: ordersSlice

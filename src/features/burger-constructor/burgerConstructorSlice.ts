@@ -9,7 +9,7 @@ export interface burgerConstructorState {
   ingredients: TIngredient[];
   isEmpty: boolean;
 }
-const initialState: burgerConstructorState = {
+export const initialState: burgerConstructorState = {
   isLoading: false,
   ingredients: [],
   bun: null,

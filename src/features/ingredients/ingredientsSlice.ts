@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '@api';
+import { getIngredientsApi } from '../../utils/burger-api';
 import { TIngredient, TUser } from '@utils-types';
 import { RootState } from '../../services/store';
 
@@ -7,9 +7,6 @@ export const getIngredientsThunk = createAsyncThunk(
   'ingredients/getIngredients',
   () => getIngredientsApi()
 );
-
-export const getIngredientById = (id: string) => (state: RootState) =>
-  state.ingredients.ingredients.find((ingredient) => ingredient._id === id);
 
 export interface IngredientsState {
   isLoading: boolean;
@@ -20,7 +17,7 @@ export interface IngredientsState {
   isExist: boolean;
   error: boolean;
 }
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   isLoading: false,
   ingredients: [],
   buns: [],
@@ -52,6 +49,7 @@ export const ingredientsSlice = createSlice({
         state.mains = [];
         state.sauces = [];
         state.isExist = true; // Меняем значение isExist
+        state.isLoading = false;
         state.ingredients = action.payload;
         action.payload.forEach((ingredient: TIngredient) => {
           switch (ingredient.type) {
