@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getOrdersApi, orderBurgerApi } from '@api';
+import { getOrdersApi, orderBurgerApi } from '../../utils/burger-api';
 import { TOrder, TOrdersData } from '@utils-types';
 
 export const getUserOrdersThunk = createAsyncThunk(
@@ -20,7 +20,7 @@ export interface OrdersState {
   isFirstLoading: boolean;
   lastOrder: TOrder | null;
 }
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   isLoading: false,
   orderRequest: false,
   orderData: null,

@@ -7,7 +7,7 @@ import {
   TLoginData,
   TRegisterData,
   updateUserApi
-} from '@api';
+} from '../../utils/burger-api';
 import { TUser } from '@utils-types';
 
 export const registerUserThunk = createAsyncThunk(
@@ -39,7 +39,7 @@ export interface UserState {
   user: TUser | null;
   error: boolean;
 }
-const initialState: UserState = {
+export const initialState: UserState = {
   isLoading: false,
   user: null,
   error: false
